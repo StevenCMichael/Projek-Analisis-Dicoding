@@ -24,7 +24,7 @@
 2. Buka Jupyter Notebook atau Google Colaboratory.
 3. Buat notebook baru.
 4. Unggah file .ipynb yang telah disediakan.
-5. Jalankan sel kode untuk mulai menggunakan aplikasi.
+5. Jalankan sel kode.
 
 ## How to run dashboard.py
 1. Download file dashboard.py.
