@@ -1,5 +1,1 @@
-pandas
-matplotlib
-seaborn
-streamlit
-datetime
+https://y5vlslvdtryipvw7eyqfdm.streamlit.app/
