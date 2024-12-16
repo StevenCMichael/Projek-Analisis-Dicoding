@@ -29,7 +29,7 @@
 ## How to run dashboard.py
 1. Download file dashboard.py.
 2. Install Streamlit di terminal atau command prompt Anda menggunakan perintah `pip install streamlit`.
-3. Jika belum dipasang, install juga library tambahan seperti pandas, numpy, scipy, matplotlib, dan seaborn.
+3. Jika belum dipasang, install library tambahan seperti pandas, numpy, scipy, matplotlib, dan seaborn.
 4. Buka Visual Studio Code (VSCode) Anda dan jalankan file dengan mengaktifkan terminal kemudian ketik  `streamlit run dashboard.py`.
 
 ## Screenshots
