@@ -46,7 +46,7 @@ def create_bycity_df(df):
     return bycity_df
 
 # Menyiapkan rfm
-def create_rfm_df(all_df):
+def create_rfm_df(df):
     rfm_df = df.groupby(by="customer_id", as_index=False).agg({
         "order_purchase_timestamp": "max", #mengambil tanggal order terakhir
         "order_id": "count",
