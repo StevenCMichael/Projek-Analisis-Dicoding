@@ -46,19 +46,23 @@ def create_bycity_df(df):
     return bycity_df
 
 # Menyiapkan rfm
+# menyiapkan RFM
 def create_rfm_df(df):
-    rfm_df = df.groupby(by="customer_id", as_index=False).agg({
-        "order_purchase_timestamp": "max", #mengambil tanggal order terakhir
-        "order_id": "nunique",
-        "price": "sum"
+    today=dt.datetime(2018,10,20)
+    df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
+    recency = (today - df.groupby('customer_id')['order_purchase_timestamp'].max()).dt.days
+    frequency = df.groupby('customer_id')['order_id'].count()
+    monetary = df.groupby('customer_id')['price'].sum()
+
+    rfm_df = pd.DataFrame({
+        'customer_id': recency.index,
+        'Recency': recency.values,
+        'Frequency': frequency.values,
+        'Monetary': monetary.values
     })
-    rfm_df.columns = ["customer_id", "max_order_timestamp", "frequency", "monetary"]
-    
-    rfm_df["max_order_timestamp"] = rfm_df["max_order_timestamp"].dt.date
-    recent_date = df["order_purchase_timestamp"].dt.date.max()
-    rfm_df["recency"] = rfm_df["max_order_timestamp"].apply(lambda x: (recent_date - x).days)
-    rfm_df.drop("max_order_timestamp", axis=1, inplace=True)
-    
+
+    column_list = ['customer_id','Recency','Frequency','Monetary']
+    rfm_df.columns = column_list
     return rfm_df
 
 # Menyiapkan filter
