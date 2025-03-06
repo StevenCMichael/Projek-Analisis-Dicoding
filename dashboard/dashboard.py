@@ -13,7 +13,7 @@ all_df = pd.read_csv('all_data.csv')
 def create_daily_orders_df(df):
     df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])  # Convert to datetime
     daily_orders_df = df.resample(rule='D', on='order_purchase_timestamp').agg({
-        "order_id": "nunique",
+        "order_id": "count",
         "price": "sum"
     })
     daily_orders_df = daily_orders_df.reset_index()
