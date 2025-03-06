@@ -55,7 +55,7 @@ def create_rfm_df(df):
     rfm_df.columns = ["customer_id", "max_order_timestamp", "frequency", "monetary"]
     
     rfm_df["max_order_timestamp"] = rfm_df["max_order_timestamp"].dt.date
-    recent_date = df["order_purchase_timestamp"].dt.date.max() # Menggunakan df yang diinput dan memastikan tipe data
+    recent_date = df["order_purchase_timestamp"].dt.date.max() 
     rfm_df["recency"] = rfm_df["max_order_timestamp"].apply(lambda x: (recent_date - x).days)
     rfm_df.drop("max_order_timestamp", axis=1, inplace=True)
     
