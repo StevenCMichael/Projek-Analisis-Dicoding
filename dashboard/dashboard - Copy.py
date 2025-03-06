@@ -37,7 +37,7 @@ def create_byrating(df):
 
 # Menyiapkan kota yang memiliki customer paling banyak
 def create_bycity_df(df):
-    bycity_df = df.groupby(by="customer_city").customer_id.nunique().reset_index()
+    bycity_df = df.groupby(by="customer_city").customer_id.count().sort_values(ascending=False).reset_index()
     bycity_df.rename(columns={
         "customer_city": "City",
         "customer_id": "Total Customers"
@@ -45,25 +45,8 @@ def create_bycity_df(df):
     
     return bycity_df
 
-# Menyiapkan rfm
-# menyiapkan RFM
-def create_rfm_df(df):
-    today=dt.datetime(2018,10,20)
-    df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
-    recency = (today - df.groupby('customer_id')['order_purchase_timestamp'].max()).dt.days
-    frequency = df.groupby('customer_id')['order_id'].count()
-    monetary = df.groupby('customer_id')['price'].sum()
 
-    rfm_df = pd.DataFrame({
-        'customer_id': recency.index,
-        'Recency': recency.values,
-        'Frequency': frequency.values,
-        'Monetary': monetary.values
-    })
-
-    column_list = ['customer_id','Recency','Frequency','Monetary']
-    rfm_df.columns = column_list
-    return rfm_df
+rfm_df = pd.read_csv('rfm_df.csv')
 
 # Menyiapkan filter
 min_date = pd.to_datetime(all_df['order_approved_at']).dt.date.min()
@@ -184,36 +167,47 @@ ax.tick_params(axis='y', labelsize=20)
 ax.tick_params(axis='x', labelsize=15)
 st.pyplot(fig)
 
-# Membuat RFM
-st.header("RFM Best Value")
-fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(30, 10))
-colors = ["#72BCD4", "#72BCD4", "#72BCD4", "#72BCD4", "#72BCD4"]
-
-# Visualisasi berdasarkan Recency
-sns.barplot(y="Recency", x="customer_id", data=rfm_df.sort_values(by="Recency", ascending=True).head(5), ax=ax[0], color=colors[0])
+# RFM
+st.subheader("Best Customer Based on RFM Parameters")
+ 
+col1, col2, col3 = st.columns(3)
+ 
+with col1:
+    avg_recency = round(rfm_df.recency.mean(), 1)
+    st.metric("Average Recency (days)", value=avg_recency)
+ 
+with col2:
+    avg_frequency = round(rfm_df.frequency.mean(), 2)
+    st.metric("Average Frequency", value=avg_frequency)
+ 
+with col3:
+    avg_frequency = format_currency(rfm_df.monetary.mean(), "AUD", locale='es_CO') 
+    st.metric("Average Monetary", value=avg_frequency)
+ 
+fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(28, 14))
+colors = ["#90CAF9", "#90CAF9", "#90CAF9", "#90CAF9", "#90CAF9"]
+ 
+sns.barplot(y="recency", x="customer_id", data=rfm_df.sort_values(by="recency", ascending=True).head(5), palette=colors, ax=ax[0])
 ax[0].set_ylabel(None)
-ax[0].set_xlabel("customer_id")
-ax[0].set_title("By Recency (days)", loc="center", fontsize=18)
-ax[0].tick_params(axis ='x', labelsize=15)
+ax[0].set_xlabel(None)
+ax[0].set_title("By Recency (days)", loc="center", fontsize=20)
+ax[0].tick_params(axis='x', labelsize=17)
 ax[0].set_xticks([])
-
-# Visualisasi berdasarkan Frequency
-sns.barplot(y="Frequency", x="customer_id", data=rfm_df.sort_values(by="Frequency", ascending=False).head(5), ax=ax[1], color=colors[1])
+ 
+sns.barplot(y="frequency", x="customer_id", data=rfm_df.sort_values(by="frequency", ascending=False).head(5), palette=colors, ax=ax[1])
 ax[1].set_ylabel(None)
-ax[1].set_xlabel('customer_id')
-ax[1].set_title("By Frequency", loc="center", fontsize=18)
-ax[1].tick_params(axis='x', labelsize=15)
+ax[1].set_xlabel(None)
+ax[1].set_title("By Frequency", loc="center", fontsize=20)
+ax[1].tick_params(axis='x', labelsize=17)
 ax[1].set_xticks([])
-
-# Visualisasi berdasarkan Monetary
-sns.barplot(y="Monetary", x="customer_id", data=rfm_df.sort_values(by="Monetary", ascending=False).head(5), ax=ax[2], color=colors[2])
+ 
+sns.barplot(y="monetary", x="customer_id", data=rfm_df.sort_values(by="monetary", ascending=False).head(5), palette=colors, ax=ax[2])
 ax[2].set_ylabel(None)
-ax[2].set_xlabel('customer_id')
-ax[2].set_title("By Monetary", loc="center", fontsize=18)
-ax[2].tick_params(axis='x', labelsize=15)
+ax[2].set_xlabel(None)
+ax[2].set_title("By Monetary", loc="center", fontsize=20)
+ax[2].tick_params(axis='x', labelsize=17)
 ax[2].set_xticks([])
-
-plt.suptitle("Best Customer Based on RFM Parameters (customer_id)", fontsize=20)
-st.pyplot(plt)
+ 
+st.pyplot(fig)
  
 st.caption('Copyright (c) Steven C Michael 2024')
