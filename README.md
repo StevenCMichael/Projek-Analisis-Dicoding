@@ -3,8 +3,9 @@
 ## File
 ```
 ├── DASHBOARD
-│   ├── dashboard.py
-│   └── all_.csv
+│   ├── dashboard2.py
+│   ├── rfm_df.csv
+│   └── all_data.csv
 ├── Data
 │   ├── customers_dataset.csv
 │   ├── order_items_dataset.csv
