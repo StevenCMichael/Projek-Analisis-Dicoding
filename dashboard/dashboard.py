@@ -37,7 +37,7 @@ def create_byrating(df):
 
 # Menyiapkan kota yang memiliki customer paling banyak
 def create_bycity_df(df):
-    bycity_df = df.groupby(by="customer_city").customer_id.nunique().reset_index()
+    bycity_df = df.groupby(by="customer_city").customer_id.count().reset_index()
     bycity_df.rename(columns={
         "customer_city": "City",
         "customer_id": "Total Customers"
